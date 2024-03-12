@@ -1,48 +1,52 @@
 const express = require('express');
 const app = express()
-const http = require('http')
 const jwt = require('jsonwebtoken')
-const { Server } = require('socket.io')
 const cors = require('cors')
+const http = require('http')
+const socketIO = require('socket.io');
 require('dotenv').config();
 require('./Confiq/Confiq');
 
-const ChatRoute = require('./Router/Chat')
-const MessageRoute = require('./Router/MessageRouter')
-
-app.use('/chat', ChatRoute)
-app.use('/message',MessageRoute)
-
 app.use(cors())
 const server = http.createServer(app)
+const io = socketIO(server)
 
-const io = new Server(server, {
-    cors: {
-        origin: {
-            origin: process.env.Origin,
-            methods: ['GET', "POST"]
-        }
-    }
-})
-
+const connectedUser = []
 
 io.on('connection', (socket) => {
-    console.log(`new client connected ${socket.id}`);
 
-    socket.on('addUser', (token)=>{
+    socket.on('addUser', (token) => {
         console.log(token)
-        const decodedToken = jwt.verify(token,process.env.SECRET_KEY)
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY)
         console.log(decodedToken);
     })
 
-    socket.on('disconnect', () => {
-        console.log('client disconnected');
-    });
-
+   
     socket.on('chat_msg', ({ message }) => {
+
         console.log(message, 'msg');
         io.emit('chat_message', message)
     })
+
+    socket.on('userConnection', ( {user} ) => {
+        connectedUser[user]=socket.id
+        console.log(`${user} coonected, UserId:${socket.id}`)
+        io.emit('userConnection', user)
+    })
+
+     socket.on('AdminConnection', ( {admin} ) => {
+        connectedUser[admin]=socket.id
+        console.log(`${admin} coonected, UserId:${socket.id}`)
+        io.emit('AdminConnection', admin)
+    })
+    
+    
+    socket.on('disconnect', () => {
+        console.log('client disconnected');
+    });
+    console.log(connectedUser);
+
+
 })
 
 const port = 3333
