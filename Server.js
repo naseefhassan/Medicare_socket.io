@@ -15,29 +15,30 @@ const connectedUser = []
 
 io.on('connection', (socket) => {
 
-    socket.on('addUser', (token) => {
-        console.log(token)
-        const decodedToken = jwt.verify(token, process.env.SECRET_KEY)
-        console.log(decodedToken);
-    })
-
-   
-    socket.on('chat_msg', ({ message }) => {
-
-        console.log(message, 'msg');
-        io.emit('chat_message', message)
-    })
-
+    // Handle user connection
     socket.on('userConnection', ( {user} ) => {
         connectedUser[user]=socket.id
-        console.log(`${user} coonected, UserId:${socket.id}`)
+        console.log(`${user} connected, UserId:${socket.id}`)
         io.emit('userConnection', user)
     })
 
+    // Handle admin connection
      socket.on('AdminConnection', ( {admin} ) => {
         connectedUser[admin]=socket.id
-        console.log(`${admin} coonected, UserId:${socket.id}`)
+        console.log(`${admin} connected, UserId:${socket.id}`)
         io.emit('AdminConnection', admin)
+    })
+
+    // sending message
+    socket.on('message',({message, sender, receiver})=>{
+        console.log(`${message} from ${sender} to ${receiver}`);
+        const receiverId = connectedUser[receiver]
+        if(receiverId){
+            io.to(receiverId).emit("message",{message, sender})
+            console.log(`message sent to ${receiver}`);
+        }else{
+            console.log(`recipient ${receiver} not found`);
+        }
     })
     
     
