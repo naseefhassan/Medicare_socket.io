@@ -16,10 +16,10 @@ const connectedUser = []
 io.on('connection', (socket) => {
 
     // Handle user connection
-    socket.on('userConnection', ( {user} ) => {
-        connectedUser[user]=socket.id
-        console.log(`${user} connected, UserId:${socket.id}`)
-        io.emit('userConnection', user)
+    socket.on('userConnection', ( {sender} ) => {
+        connectedUser[sender]=socket.id
+        console.log(`${sender} connected, UserId:${socket.id}`)
+        io.emit('userConnection', sender)
     })
 
     // Handle admin connection
@@ -33,6 +33,7 @@ io.on('connection', (socket) => {
     socket.on('message',({message, sender, receiver})=>{
         console.log(`${message} from ${sender} to ${receiver}`);
         const receiverId = connectedUser[receiver]
+        console.log(receiverId);
         if(receiverId){
             io.to(receiverId).emit("message",{message, sender})
             console.log(`message sent to ${receiver}`);
@@ -45,9 +46,9 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('client disconnected');
     });
+    
+    
     console.log(connectedUser);
-
-
 })
 
 const port = 3333
