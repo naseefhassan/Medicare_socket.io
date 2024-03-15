@@ -1,15 +1,24 @@
-const moongoose =require('mongoose')
+const mongoose = require("mongoose");
 
-const MessageSchema = new moongoose.Schema({
-    ChatId: { type: String },
-    SenderId: { type: String },
-    text: { type: String },
+const MessageSchema = new mongoose.Schema({
+  message: {
+    type: String,
+    required: true,
+  },
+  sender: {
+    type: String,
+    required: true,
+  },
+  receiver: {
+    type: String,
+    required: true,
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
+});
 
-}, {
-    timestamps: true
-}
-)
-
-const MessageModel = moongoose.model('message',MessageSchema)
-
-module.exports =  MessageModel
+const MessageModel = new mongoose.model("messages", MessageSchema);
+module.exports = MessageModel;

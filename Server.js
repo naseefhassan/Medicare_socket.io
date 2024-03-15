@@ -6,10 +6,16 @@ const http = require('http')
 const socketIO = require('socket.io');
 require('dotenv').config();
 require('./Confiq/Confiq');
+const messageRouter = require('./Router/router')
 
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 const server = http.createServer(app)
 const io = socketIO(server)
+
+
+app.use("/message", messageRouter);
 
 const connectedUser = []
 
