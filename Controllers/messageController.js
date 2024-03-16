@@ -18,5 +18,14 @@ const object = {
       res.status(500).json({ error: err });
     }
   },
+  getMessage:async(req,res)=>{
+    try {
+      const message = await MessageModel.find()
+      res.status(200).json({message})
+    } catch (error) {
+      res.status(400).json({message:'fetching failed'})
+      console.error(error);
+    }
+  }
 };
 module.exports = object;
