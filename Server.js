@@ -24,27 +24,21 @@ io.on('connection', (socket) => {
     // Handle user connection
     socket.on('userConnection', ( {sender} ) => {
         connectedUser[sender]=socket.id
-        console.log(`${sender} connected, UserId:${socket.id}`)
         io.emit('userConnection', sender)
     })
 
     // Handle admin connection
      socket.on('AdminConnection', ( {admin} ) => {
         connectedUser[admin]=socket.id
-        console.log(`${admin} connected, UserId:${socket.id}`)
         io.emit('AdminConnection', admin)
     })
 
     // sending message
     socket.on('message',({message, sender, receiver})=>{
-        console.log(`${message} from ${sender} to ${receiver}`);
         const receiverId = connectedUser[receiver]
-        console.log(receiverId);
         if(receiverId){
             io.to(receiverId).emit("message",{message, sender})
-            console.log(`message sent to ${receiver}`);
         }else{
-            console.log(`recipient ${receiver} not found`);
         }
     })
     
@@ -54,7 +48,6 @@ io.on('connection', (socket) => {
     });
     
     
-    console.log(connectedUser);
 })
 
 const port = 3333

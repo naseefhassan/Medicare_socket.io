@@ -1,10 +1,8 @@
 const MessageModel = require("../Model/MessageSchema");
 const object = {
   saveMessage: async (req, res) => {
-    console.log('hi');
     try {
       const { message, sender, receiver } = req.body;
-      console.log(req.body);
       const messages = await MessageModel({
         message,
         sender,
