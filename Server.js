@@ -14,7 +14,7 @@ app.use(cors());
 const server = http.createServer(app);
 const io = socketIO(server);
 
-app.use("/message", messageRouter);
+app.use("/io/message", messageRouter);
 
 const connectedUser = [];
 
@@ -33,7 +33,6 @@ io.on("connection", (socket) => {
 
   // sending message
   socket.on("message", ({ message, sender, receiver }) => {
-    console.log(message, "mess");
     const receiverId = connectedUser[receiver];
     if (receiverId) {
       io.to(receiverId).emit("message", { message, sender });
