@@ -8,7 +8,7 @@ require("dotenv").config();
 require("./Confiq/Confiq");
 const messageRouter = require("./Router/router");
 
-app.use(express.json()); // for parsing application/json
+app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 const server = http.createServer(app);
